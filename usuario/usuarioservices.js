@@ -2,7 +2,7 @@
 import {client} from '../pgconfig'
 
 //registro
-export const RegistSer= async (usuario)=>{
+ const RegistSer= async (usuario)=>{
    await client.connect(); 
     try {
     
@@ -16,7 +16,7 @@ export const RegistSer= async (usuario)=>{
         throw error;
     }
 } 
-export const Finduser= async (nombre)=>{ 
+ const Finduser= async (nombre)=>{ 
     await client.connect();
     try
     {
@@ -38,7 +38,7 @@ catch(error){
 }
 //autenticar
 //consultar
-export const AuthSer = async (nombre) =>{
+ const AuthSer = async (nombre) =>{
     await client.connect();
     try{
         const {rows}= await client.query("select * from where nombre = $1", [nombre])
@@ -56,7 +56,7 @@ catch(error){
 
 
 //update contraseña
-export const UpdateSer = async =>{
+ const UpdateSer = async (req,res)=>{
     await client.connect();
     try{  
         const{rows} = await client.query ("UPDATE usuario SET (contraseña) = '?' WHERE nombre = '?' AND contraseña = '?'", [req.body.contrseña, req.params.nombre, req.params.contraseña]);
@@ -70,9 +70,12 @@ export const UpdateSer = async =>{
 }
 
 //delete user
-export const BanishSer= async =>{
+ const BanishSer= async (req,res) =>{
     try{
         const{rows}= await client.query ('DELETE * FROM usuario WHERE', [req.params.nombre, req.params.contrseña])
       }
       catch(err){}
 }
+export default {
+    Finduser, BanishSer, UpdateSer, AuthSer, RegistSer
+};

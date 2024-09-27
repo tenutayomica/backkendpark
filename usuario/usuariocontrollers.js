@@ -6,55 +6,76 @@ import {client} from './pgconfig.js';
 import bcryptjs from "bcryptjs";
 import jwt from 'jsonwebtoken';
 app.use(express.json());
-// guardar usuario nuevo
-//revisar 
-import RegistSer from './usuarioservices';
-import Finduser  from './usuarioservices.js';
-import UpdateSer from './usuarioservices';
-import BanishSer  from './usuarioservices';
-import AuthSer from './usuarioservices';
-export const newuser = (
- (req, res) => {
-   const fin = await Finduser(nombre);
-   if (Finduser = null){
-   try{
- 
-  usuario= req.body;
-   const hashed =  await bcryptjs.hash(  usuario.contraseña, 10)
-  console.log("usuario", usuario)
-  console.log("hashed", hashed)
-  const reg = await RegistSer(usuario);
-  res.json();
-  }
-  catch{}}
-  else{
-    return error;
-  }
-})
+import { verifyToken } from './usuariomidware.js';
+//services imports
+import UsuarioService from './usuarioservices';
 
 
-//autenticar
+//registro de usuario
+export const newuser =   async(req,res)=>
+  {
+    const { usuario } = req.body;
+    
+    if (!usuario || !usuario.nombre || !usuario.apellido || !usuario.email || !usuario.contraseña) {
+    return res.status(400).json({ error: 'Datos de usuario incompletos' });}
+    else
+    
+    {
+      try
+      {
+      
+        const userExists = await UsuarioService.Finduser(usuario.nombre);
+        if (userExists) {
+        return res.status(409).json({ error: 'El usuario ya existe' });
+        }
+        else
+        {
+        const hashedPassword = await bcrypt.hash(usuario.contraseña, 10);
+        const newUser =
+        {
+         nombre: usuario.nombre,
+         apellido: usuario.apellido,
+         email: usuario.email,
+         contraseña: hashedPassword,
+        }
+        const savedUser = await UsuarioService.RegistSer(newUser);
+
+        res.status(201).json({ message: 'Usuario creado exitosamente', user: savedUser });}
+      }
+      catch (error){console.error('error',error);
+        res.status(500).json({error: 'failed to create user'});
+
+      }
+    }
+  };
+
+//ingresar 
 export const login = 
-((req,res)=>{
-  try{
+async (req,res)=>{
+  const {nombre, contraseña} = req.body;
+   if (!nombre||!contraseña){
+    return res.status(400).json({error: 'Se requiere nombre y contraseña'});
+   }
+   else{
+    try{
+       const user = await UsuarioService.Finduser(nombre);
+       if (!user){ return req.status(400).json({error: 'invalid user'})}
+       const checkPassword = await bcrypt.compare(contraseña, user.contraseña);
+       if(!checkPassword){
+        return req.status(400).json({error: 'invalid password'})
+       }
+       else{
+        const token = jwt.sign({userid:user.id},process.env.JWT_SECRET,{ expiresIn: '1h' });
+        req.status(200).json({user,token}); 
+       }
+    }
+    catch(error) {
+        console.error(error);
+        req.status(500).json({error: 'unable to login'})
+    }
+   }
+};
   
-  const auht= await AuthSer(nombre,contraseña)
-  const{nombre,contraseña}= req.body;
-  
- const hashed = usuario_db.contraseña;
- const match = await.bcryptjs.compare (contraseña, hashed);
-  await client.end();
-  if (match){
-  
-    const token= "token"
-    jwt.sign({nombre:usuario_db.userid},clave)
-    res.json({'nombre': usuario_db.nombre, 'email':usuario_db.email, 'token': token})
-    return;
-  }
-  res.send("inexistente")}
-  catch{}
-}
-  )
 
 
 
@@ -64,17 +85,13 @@ export const login =
 //falta agragar lo del mmiddleware
 const CambiaCon = async (req,res) => 
 {
-  const upd= await UpdateSer(nombre);
+  const upd= await UsuarioService.UpdateSer(nombre);
   return 'updated';
 };
 
 //borrar usuario
 //falta agragr lo del middleware
 export const deleteuser =async (req,res)=> {
-  const ban= await BanishSer(nombre);
+  const ban= await UsuarioService.BanishSer(nombre);
   return 'borrado';
-}
-
-
-
-
+};    
