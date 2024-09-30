@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
   import CambiaCon from './usuariocontrollers.js';
   import deleteuser from './usuariocontrollers.js';
   router.post('/', newuser)
-  router.get('/:nombre/contraseña', login)
+  router.post('/login', login)
   router.put('/:nombre',verifyToken, CambiaCon)
   router.delete('/:nombre',verifyToken, deleteuser)
   
