@@ -1,24 +1,20 @@
 //dibujos
-import {client} from './pgconfig.js';
+import {client} from '../pgconfig.js';
 app.listen(3000);
-import multerUploads from './multerconfig.js';
-import upload from './multerconfig.js';
+import multerUploads from '../multerconfig.js';
+import upload from '../multerconfig.js';
+import dibujosservices from './dibujosservices.js';
 app.use(express.json());
-
-// buscar que usuario la subió y agarrar el id, guardar id_usuario:
-import nombre from '../usuario/usuariocontrollers';
-import contraseña from '../usuario/usuariocontrollers';
-//falta cambiar esto por middleware
-//usar los valores nombre y contraseña de login consultar si esta es la forma correcta
-export const associateuser=
-(
-(req,res)=>{
+import { verifyToken } from '../usuario/usuariomidware.js';
+// buscar que usuario la subió y agarrar el id, guardar id_usuario
+const associateuser=
+(async (req,res)=>{
     try{
-        const[results,fields]= await client.query('SELECT "id" FROM usuario WHERE "nombre"='+nombre+' AND contraseña= '+contraseña ,[req.params.nombre]);
-        res.json(results);
-        idusu = results;
-        const[results,fields]= await client.query('INSERT INTO dibujos ("id_usuario") VALUES ()', [req.body.id_usuario]);
-        res.json(results);
+        const {nombre}= req.params.nombre;
+        const guardar= await dibujosservices.iduser(nombre);
+        const final = await dibujosservices.saveuserid(guardar)
+        res.status(200).json({message: 'success'})
+     
     }
         catch(err){console.log(err)}
     }
@@ -28,8 +24,8 @@ export const associateuser=
 
 
 
-//Subir img a cloudinary (consultar por errores):
-export const cloudupload=
+//Subir img a cloudinary:
+ const cloudupload =
 (
 await cloudinary.uploader
 .upload(
@@ -41,46 +37,51 @@ await cloudinary.uploader
     console.log(error);
 })
 );
-
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
       // subir a Cloudinary
       const result = await cloudinary.uploader.upload(req.file.path , {
-         folder:'folder_name'
+         folder:'uploaded'
       });
    // mandar urlcloudinary
-   res.json({ imageUrl: result.secure_url });
-} catch (error) {
+
+   const imageUrl= result.secure_url;
+   const savedrawing = await dibujosservices.url(imageUrl);
+} 
+catch (error) {
   console.error(error);
   res.status(500).json({ error: 'Error uploading image to Cloudinary' });
 }
 });
 
-
-
-// guardar dibujo nuevo en bdd:
-
-export const savedrawing=(
- async (req,res) => {
-    try{
-        const[results,fields] = await client.query ("INSERT INTO dibujos (ruta,sano) VALUES ('?','?') WHERE id_usuario = '?'", [req.body.sano, req.body.ruta, req.params.id_usuario]);
-        res.json(results);}
-        catch(err){console.log(err)}
-});
-
-app.post('/upload', multerUploads, (req, res) => {
-    console.log('req.body :', req.body);
-    });//revisar y arreglar
   
 //avisar a IA
+const response = await fetch('http://tu-ia/nueva-imagen', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        imageUrl: imageUrl,
+        userId: userId
+    })
+});
+
+if (!response.ok) {
+    throw new Error('Error al notificar a la IA');
+}
+
+res.json({ message: 'Image uploaded successfully!', imageUrl });
+
 
 //IA enviar porcentaje
 export const receivediagnostic=
 (
 async (req,res) => {
-    try{
-        const[results,fields]= await Client.query("INSERT INTO dibujos (sano) VALUES = " + sanferm+ "WHERE usuario.contraseña =  "+contrausu+"AND usuario.nombre = "+nomusu, [req.body.sano,req.params.contraseña,req.params.nombre]);
-    }
+try{
+   
+    const di= await dibujosservices.iasmt()
+}
     catch(err){console.log(err)}
 });
 
@@ -88,3 +89,7 @@ async (req,res) => {
 export const senddiagnostic=(
     async (req,res)=>{}
 );
+
+export default{
+    senddiagnostic, receivediagnostic, savedrawing, cloudupload, associateuser
+}

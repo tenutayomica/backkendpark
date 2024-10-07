@@ -1,4 +1,4 @@
-import {client} from './pgconfig.js';
+import {client} from '../pgconfig.js';
 // (req,res=> {
 //   res.send('conexion correcta')
 // })
@@ -7,8 +7,7 @@ import bcryptjs from "bcryptjs";
 import jwt from 'jsonwebtoken';
 app.use(express.json());
 import { verifyToken } from './usuariomidware.js';
-//services imports
-import UsuarioService from './usuarioservices';
+import UsuarioService from './usuarioservices.js';
 
 
 //registro de usuario
@@ -85,13 +84,21 @@ async (req,res)=>{
 //falta agragar lo del mmiddleware
 const CambiaCon = async (req,res) => 
 {
+  try{
+  const {nombre}= req.params.nombre;
   const upd= await UsuarioService.UpdateSer(nombre);
-  return 'updated';
+  res.status(200).json({message: 'success'});
+}
+  catch(error){
+    console.error(error, 'error');
+    req.status(500).json({error: 'error'});
+  }
 };
 
 //borrar usuario
-//falta agragr lo del middleware
+
 export const deleteuser =async (req,res)=> {
+  const {nombre}= req.params.nombre;
   const ban= await UsuarioService.BanishSer(nombre);
   return 'borrado';
 };    

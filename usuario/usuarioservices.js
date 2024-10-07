@@ -1,5 +1,5 @@
 //usuario services
-import {client} from '../pgconfig'
+import {client} from '../pgconfig.js'
 
 //registro
  const RegistSer= async (usuario)=>{
@@ -74,7 +74,9 @@ catch(error){
     try{
         const{rows}= await client.query ('DELETE * FROM usuario WHERE', [req.params.nombre, req.params.contrseña])
       }
-      catch(err){}
+      catch(error){
+        throw error
+      }
 }
 export default {
     Finduser, BanishSer, UpdateSer, AuthSer, RegistSer
