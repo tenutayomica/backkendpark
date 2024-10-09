@@ -1,8 +1,4 @@
 import client from "pg";
-import app from '../index.js'
-
-app.listen(3000);
-
 const iduser = async ()=> {
     await client.connect();
     try{

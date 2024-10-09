@@ -1,7 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { config, uploader } from 'cloudinary';
 import dotenv from 'dotenv';
-import { nextTick } from 'q';
 dotenv.config();
 // Configuration
 const cloudinaryconfig= config({ 
@@ -9,8 +8,7 @@ const cloudinaryconfig= config({
     api_key: '577741984887614', 
     api_secret: 'yeKfGfNqjtfkVwDyQTeF20beK-8' 
 });
-next();
-export { cloudinaryconfig, uploader };
+export default { cloudinaryconfig, uploader };
 
 // Upload an image
 const uploadResult = await cloudinary.uploader
