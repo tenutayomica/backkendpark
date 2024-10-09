@@ -1,7 +1,7 @@
 import pg from 'pg'
 const { Client } = pg
  
-export const client = new Client({
+const client = new Client({
   user: 'default',
   password: 'KH9cSNqk8OYt',
   host: 'ep-shy-sunset-a46gvpce-pooler.us-east-1.aws.neon.tech',
@@ -10,3 +10,5 @@ export const client = new Client({
   ssl: true
 })
 client.connect();
+
+export default {client};

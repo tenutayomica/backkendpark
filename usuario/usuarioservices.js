@@ -1,5 +1,5 @@
 //usuario services
-import {client} from '../pgconfig.js'
+import client from '../pgconfig.js'
 
 //registro
  const RegistSer= async (usuario)=>{

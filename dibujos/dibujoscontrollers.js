@@ -1,11 +1,12 @@
 //dibujos
-import {client} from '../pgconfig.js';
+import client from '../pgconfig.js';
+import app from '../index.js';
 app.listen(3000);
 import multerUploads from '../multerconfig.js';
 import upload from '../multerconfig.js';
 import dibujosservices from './dibujosservices.js';
 app.use(express.json());
-import { verifyToken } from '../usuario/usuariomidware.js';
+import  verifyToken  from '../usuario/usuariomidware.js';
 // buscar que usuario la subió y agarrar el id, guardar id_usuario
 const associateuser=
 (async (req,res)=>{
@@ -89,7 +90,7 @@ try{
 export const senddiagnostic=(
     async (req,res)=>{}
 );
-
-export default{
+const controller = {
     senddiagnostic, receivediagnostic, savedrawing, cloudupload, associateuser
-}
+};
+export default controller;
