@@ -1,6 +1,9 @@
 import client from "pg";
 import express from 'express';
 import multer from 'multer';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
+import {join} from 'path';
 const routes = express.Router()
 routes.get('/', (req, res) => {
     res.send('Hello World')
@@ -41,6 +44,6 @@ routes.post('/usuario/:nombre', verifyToken, Dibutroller.associateuser);
 routes.post('/upload/:id_usuario', verifyToken,  upload.single('file'), Dibutroller.savedrawing);
 routes.post('/sano', verifyToken, Dibutroller.receivediagnostic);
 routes.get('/upload/:id_usuario', verifyToken, Dibutroller.senddiagnostic);
-export default {routes};
+export default routes;
 
 

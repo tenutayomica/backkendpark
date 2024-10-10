@@ -1,6 +1,6 @@
 //dibujos
 import dibujosservices from './dibujosservices.js';
-import { cloudinaryconfig } from '../cloudinary config.js';
+import  cloudinaryconfig  from '../cloudinary config.js';
 // buscar que usuario la subió y agarrar el id, guardar id_usuario
 const associateuser =
     (async (req, res) => {
@@ -37,22 +37,22 @@ catch(error){
 };
 });
 //avisar a IA
-const response = await fetch('http://tu-ia/nueva-imagen', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        imageUrl: imageUrl,
-        userId: userId
-    })
-});
+//const response = await fetch('http://tu-ia/nueva-imagen', {
+   // method: 'POST',
+   // headers: {
+    //    'Content-Type': 'application/json'
+    //},
+   // body: JSON.stringify({
+   //     imageUrl: imageUrl,
+    //    userId: userId
+   // })
+//});
 
-if (!response.ok) {
-    throw new Error('Error al notificar a la IA');
-}
+//if (!response.ok) {
+//    throw new Error('Error al notificar a la IA');
+//}
 
-res.json({ message: 'Image uploaded successfully!', imageUrl });
+//res.json({ message: 'Image uploaded successfully!', imageUrl });
 
 
 //IA enviar porcentaje
@@ -71,6 +71,6 @@ export const senddiagnostic = (
     async (req, res) => { }
 );
 const controller = {
-    senddiagnostic, receivediagnostic, savedrawing, cloudupload, associateuser
+    senddiagnostic, receivediagnostic, savedrawing, associateuser
 };
 export default controller;

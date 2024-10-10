@@ -10,4 +10,4 @@ router.post('/newuser', usuarioController.newuser)
 router.post('/login', usuarioController.login)
 router.put('/:nombre', verifyToken, usuarioController.cambiacon)
 router.delete('/:nombre', verifyToken, usuarioController.deleteuser)
-export default { router };
+export default router;
