@@ -7,7 +7,7 @@ import client from '../pgconfig.js'
     try {
     
       const {rows}=  await client.query('INSERT INTO usuario ("email", "nombre", "contraseña") VALUES ($1, $2, $3)', 
-      [usuario.email, usuario.nombre, usuario.contraseña, hashed])
+      [email, nombre, contraseña])
     await client.end();
     return rows;
     }
@@ -20,16 +20,9 @@ import client from '../pgconfig.js'
     await client.connect();
     try
     {
-     const {rows}= await client.query('SELECT * FROM "usuario" WHERE nombre= $1', [req.params.nombre])
+     const {rows}= await client.query('SELECT * FROM "usuario" WHERE nombre= $1', [nombre])
      await client.end();
      return rows;
-    //consultar esto
-     if(rows.length <1){
-        return null;
-     }
-     else {
-         throw error;
-     }
 }
 catch(error){
     await client.end();

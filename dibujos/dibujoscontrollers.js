@@ -1,6 +1,6 @@
 //dibujos
 import dibujosservices from './dibujosservices.js';
-import  cloudinaryconfig  from '../cloudinary config.js';
+import  cloudinaryconfig  from '../cloudinaryconfig.js';
 // buscar que usuario la subió y agarrar el id, guardar id_usuario
 const associateuser =
     (async (req, res) => {

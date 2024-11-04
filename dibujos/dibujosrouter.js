@@ -38,12 +38,16 @@ routes.get('/', (req, res) => {
       storage: storage,
       fileFilter: fileFilter
   });
-import Dibutroller from './dibujoscontrollers.js'
+  
+import controller from './dibujoscontrollers.js'
+
 import  verifyToken from "../usuario/usuariomidware.js";
-routes.post('/usuario/:nombre', verifyToken, Dibutroller.associateuser);
-routes.post('/upload/:id_usuario', verifyToken,  upload.single('file'), Dibutroller.savedrawing);
-routes.post('/sano', verifyToken, Dibutroller.receivediagnostic);
-routes.get('/upload/:id_usuario', verifyToken, Dibutroller.senddiagnostic);
+/*
+routes.post('/usuario/:nombre', verifyToken, controller.associateuser);
+routes.post('/upload/:id_usuario', verifyToken,  upload.single('file'), controller.savedrawing);
+routes.post('/sano', verifyToken, controller.receivediagnostic);
+routes.get('/upload/:id_usuario', verifyToken, controller.senddiagnostic);
+*/
 export default routes;
 
 
