@@ -1,24 +1,21 @@
 import jwt from 'jsonwebtoken';
 import UsuarioService from './usuarioservices.js';
-
+import bcryptjs from 'bcryptjs';
 
 //registro de usuario
 const newuser = async (req, res) => {
+  console.log("new user", req.body)
   const {nombre, email, contraseña} = req.body;
-  console.log(nombre,email,contraseña);
-
   if (!nombre || !email || !contraseña) {
     return res.status(400).json({ error: 'Datos de usuario incompletos' });
   }
   else {
     try {
-
+      console.log("user exists", nombre)
       const userExists = await UsuarioService.Finduser(nombre);
-      if (userExists) {
-        return res.status(409).json({ error: 'El usuario ya existe'});
-      }
-      else {
-        const hashedPassword = await bcrypt.hash(contraseña, 10);
+      console.log("exists 2", userExists)
+      if (!userExists) {
+        const hashedPassword = await bcryptjs.hash(contraseña, 10);
         const newUser =
         {
           nombre: nombre,
@@ -28,6 +25,10 @@ const newuser = async (req, res) => {
         const savedUser = await UsuarioService.RegistSer(newUser);
 
         res.status(201).json({ message: 'Usuario creado exitosamente', user: savedUser });
+        
+      }
+      else {
+        return res.status(409).json({ error: 'El usuario ya existe'});
       }
     }
     catch (error) {
@@ -50,8 +51,8 @@ const login =
         const user = await UsuarioService.Finduser(nombre);
         if (!user) { return req.status(400).json({ error: 'invalid user' }) }
         else{
-        const hashedPassword = await bcrypt.hash(contraseña, 10);
-        const checkPassword = await bcrypt.compare(hashedPassword, user.contraseña);
+        const hashedPassword = await bcryptjs.hash(contraseña, 10);
+        const checkPassword = await bcryptjs.compare(hashedPassword, user.contraseña);
         if (!checkPassword) {
           return req.status(400).json({ error: 'invalid password' })
         }
