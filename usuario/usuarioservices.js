@@ -23,7 +23,7 @@ const { Client } = pg
     await cliente.connect();
     try
     {
-     const {rows}= await cliente.query('SELECT * FROM "usuario" WHERE nombre= $1', [nombre])
+     const {rows}= await cliente.query('SELECT "contraseña" FROM usuario WHERE "nombre"= $1', [nombre])
      if (rows.length < 1) return null;
      await cliente.end();
      
@@ -35,23 +35,21 @@ catch(error){
     throw error;
 }
 }
-//autenticar
-//consultar
- const AuthSer = async (nombre) =>{
+const GetId= async (nombre)=>{
     const cliente = new Client(client)
     await cliente.connect();
-    try{
-        const {rows}= await cliente.query("select * from where nombre = $1", [nombre])
+    try
+    {
+     const {rows}= await cliente.query('SELECT "id" FROM usuario WHERE "nombre"= $1', [nombre])
+     if (rows.length < 1) return null;
+     await cliente.end();
+     
+     return rows[0];
+    }
+    catch(error){
         await cliente.end();
-        return rows;
-//console.log(result)
-//const usuario_db = 
-
-}
-catch(error){
-    await cliente.end();
-    throw error;
-}
+        throw error;
+    }
 }
 
 
@@ -79,5 +77,5 @@ catch(error){
       }
 }*/
 export default {
-    Finduser, AuthSer, RegistSer
+    Finduser, GetId, RegistSer
 };

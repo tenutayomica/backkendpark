@@ -43,27 +43,30 @@ const newuser = async (req, res) => {
 const login =
   async (req, res) => {
     const { nombre, contraseña } = req.body;
+    console.log(nombre,contraseña);
     if (!nombre || !contraseña) {
       return res.status(400).json({ error: 'Se requiere nombre y contraseña' });
     }
     else {
       try {
+        console.log(nombre);
         const user = await UsuarioService.Finduser(nombre);
-        if (!user) { return req.status(400).json({ error: 'invalid user' }) }
+        if (!user) { return res.status(400).json({ error: 'invalid user' }) }
         else{
-        const hashedPassword = await bcryptjs.hash(contraseña, 10);
-        const checkPassword = await bcryptjs.compare(hashedPassword, user.contraseña);
+        const checkPassword = await bcryptjs.compare(contraseña, user.contraseña);
+        console.log(checkPassword);
         if (!checkPassword) {
-          return req.status(400).json({ error: 'invalid password' })
+          return res.status(400).json({ error: 'invalid password' })
         }
         else {
-          const token = jwt.sign({ userid: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-          req.status(200).json({ user, token });
+          const user= await UsuarioService.GetId(nombre);
+          const token = jwt.sign({ userid: user.id }, 'Secret123', { expiresIn: '1h' });
+          res.status(200).json({ user, token });
         }}
       }
       catch (error) {
         console.error(error);
-        req.status(500).json({ error: 'unable to login' })
+        res.status(500).json({ error: 'unable to login' })
       }
     }
   };
@@ -82,7 +85,7 @@ const login =
   }
   catch (error) {
     console.error(error, 'error');
-    req.status(500).json({ error: 'error' });
+    res.status(500).json({ error: 'error' });
   }
 };
 

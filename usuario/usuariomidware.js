@@ -12,7 +12,7 @@ const verifyToken = async (req, res, next) => {
     else{
     try {
 
-      const payload = await jwt.verify(jwtoken, process.env.JWT_SECRET)
+      const payload = await jwt.verify(jwtoken, 'Secret123')
       console.log("Desencriptado:", payload)
       req.id=payload.userid
       next();
