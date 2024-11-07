@@ -26,9 +26,7 @@ const savedrawing = ( async (req,res)=>{
 const imageUrl = result.secure_url;
 console.log(imageUrl);
 const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
-console.log('sep');
-res.status(200).json({message: 'img uploaded to database'});
-console.log('after');
+res.status(201).json({message: 'img uploaded to database'});
 }
 catch(error){
     console.error(error, 'eror');
@@ -36,30 +34,34 @@ catch(error){
 };
 });
 //avisar a IA
-//const response = await fetch('http://tu-ia/nueva-imagen', {
-   // method: 'POST',
-   // headers: {
-    //    'Content-Type': 'application/json'
-    //},
-   // body: JSON.stringify({
-   //     imageUrl: imageUrl,
-    //    userId: userId
-   // })
-//});
-
-//if (!response.ok) {
-//    throw new Error('Error al notificar a la IA');
-//}
-
-//res.json({ message: 'Image uploaded successfully!', imageUrl });
-
-
+//recomendación de gemini:
+/*const response = await fetch(iaApiEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ imageUrl })
+  });
+  
+  const iaResponse = await response.json();
+  console.log(iaResponse); // Process the IA's response*/
+  const aiyapyap = (async (req,res)=>{
+    try{
+        let promise = fetch(url, [options])
+        .then
+    }
+   catch(error){
+    console.error(error, 'eror');
+    res.status(500).json({error:'failed'});
+   }
+});
+   
 //IA enviar porcentaje
 
 
 //mandar porcentaje al front
 
 const controller = {
-     savedrawing
+     savedrawing, aiyapyap
 };
 export default controller;
