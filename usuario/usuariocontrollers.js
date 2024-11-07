@@ -59,9 +59,8 @@ const login =
           return res.status(400).json({ error: 'invalid password' })
         }
         else {
-          const user= await UsuarioService.GetId(nombre);
-          const token = jwt.sign({ userid: user.id }, 'Secret123', { expiresIn: '1h' });
-          res.status(200).json({ user, token });
+          const token = jwt.sign({ usernombre: nombre }, 'Secret123', { expiresIn: '1h' });
+          res.status(200).json({ token:token });
         }}
       }
       catch (error) {

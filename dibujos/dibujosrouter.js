@@ -1,13 +1,11 @@
-import client from "pg";
+
 import express from 'express';
 import multer from 'multer';
 import {dirname} from 'path';
 import {fileURLToPath} from 'url';
 import {join} from 'path';
 const routes = express.Router()
-routes.get('/', (req, res) => {
-    res.send('Hello World')
-  })
+
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   
@@ -35,19 +33,21 @@ routes.get('/', (req, res) => {
   };
   
   const upload = multer({
-      storage: storage,
-      fileFilter: fileFilter
+      storage: storage
   });
+
+  const uploadx = multer({ dest: "uploads/" });
   
 import controller from './dibujoscontrollers.js'
 
 import  verifyToken from "../usuario/usuariomidware.js";
-/*
-routes.post('/usuario/:nombre', verifyToken, controller.associateuser);
-routes.post('/upload/:id_usuario', verifyToken,  upload.single('file'), controller.savedrawing);
-routes.post('/sano', verifyToken, controller.receivediagnostic);
-routes.get('/upload/:id_usuario', verifyToken, controller.senddiagnostic);
-*/
+
+//routes.post('/getuser', verifyToken, controller.associateuser);
+routes.post('/upload', verifyToken,  upload.single('file'), controller.savedrawing);
+//routes.post('/sano', verifyToken, controller.receivediagnostic);
+//routes.get('/upload/:id_usuario', verifyToken, controller.senddiagnostic);
+
 export default routes;
 
 
+ 

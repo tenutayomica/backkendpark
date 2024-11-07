@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
 
       const payload = await jwt.verify(jwtoken, 'Secret123')
       console.log("Desencriptado:", payload)
-      req.id=payload.userid
+      req.nombre = payload.usernombre;
       next();
     }
     catch(error) {

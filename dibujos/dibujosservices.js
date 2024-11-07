@@ -1,30 +1,52 @@
-import client from "pg";
-const iduser = async ()=> {
-    await client.connect();
+
+import client from '../pgconfig.js'
+import pg from 'pg'
+const { Client } = pg
+/*const iduser = async (nombre)=> {
+    const cliente= new Client(client);
+    await cliente.connect();
     try{
-        const {rows}= await client.query('SELECT ("id") FROM usuario WHERE nombre = $1', [nombre]);
-        await client.end()
-        return rows[0].id;
+        const {rows}= await cliente.query('SELECT ("id") FROM usuario WHERE "nombre" = $1', [nombre]);
+        await cliente.end()
+        return rows[0];
 
     }
     catch (error){
         console.error(error, 'error');
-        resizeBy.status(500).json({error: 'error'});
+        res.status(500).json({error: 'error'});
     }
-}
-const saveuserid = async ()=> {
-    await client.connect();
-    const {rows}= await client.query('INSERT INTO dibujos ("id_usuario") VALUES $1', [guardar])
-}
+}*/
+const saveusernom = async (nombre)=> {
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+    const {rows}= await cliente.query('INSERT INTO dibujos ("username") VALUES ($1)', [nombre])
+    await cliente.end();
+    return rows;}
+    catch(error){
+        console.error(error, 'error');
+        res.status(500).json({error: 'error'});
+    }
+};
 
-const url= async ()=>{
-    await client.connect();
-    const{rows} = await client.query ("INSERT INTO dibujos (ruta) VALUES ($1) WHERE id_usuario = $2",  [imageUrl],[req.body.ruta, req.params.id_usuario]);
+const url= async (imageUrl,nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+    const{rows} = await cliente.query ('INSERT INTO dibujos ("ruta","username") VALUES ($1,$2)',  [imageUrl, nombre]);
+     await cliente.end();
+     return rows;
 }
+catch(error){
+    console.error(error, 'error');
+    res.status(500).json({error: 'error'});
+}
+};
 const iasmt= async ()=>{
-await client.connect();
-const{rows}= await client.query('INSERT INTO dibujos ("sano") VALUES = $1 ', [req.body.sano,req.params.contraseña,req.params.nombre]);
-}
+    const cliente= new Client(client);
+await cliente.connect();
+const{rows}= await cliente.query('INSERT INTO dibujos ("sano") VALUES = $1 WHERE username = $2 ', [req.body.sano, req.params.nombre]);
+};
 export default{
-    saveuserid, iduser, url, iasmt
+    saveusernom, url, iasmt
 };

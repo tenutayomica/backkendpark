@@ -2,34 +2,29 @@
 import dibujosservices from './dibujosservices.js';
 import  cloudinaryconfig  from '../cloudinaryconfig.js';
 // buscar que usuario la subió y agarrar el id, guardar id_usuario
-const associateuser =
+/*const associateuser =
     (async (req, res) => {
         try {
-            const { nombre } = req.params.nombre;
-            const guardar = await dibujosservices.iduser(nombre);
-            const final = await dibujosservices.saveuserid(guardar)
-            res.status(200).json({ message: 'success' })
+            
+            const guardar= await dibujosservices.saveusernom(req.nombre);
+            res.status(200).json({ message: 'success'})
 
         }
-        catch (err) { console.log(err) }
+        catch (error) { console.error(error);
+            res.status(500).json({ error: 'nope' }) }
     }
-    );
-
-
-
-
+    );*/
 
 //Subir img a cloudinary:
-const savedrawing = ( async (eq,res)=>{
+const savedrawing = ( async (req,res)=>{
     try{
-const imageFile = req.file.path;
-
-const result = await cloudinaryconfig.uploader.upload(imageFile, {
+ const imageFile = req.file.path;
+ const result = await cloudinaryconfig.uploader.upload(imageFile, {
     folder: 'uploaded',
 });
 
 const imageUrl = result.secure_url;
-const uploadToDatabase = await dibujosservices.url(imageUrl);
+const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
 }
 catch(error){
     console.error(error, 'eror');
@@ -56,21 +51,11 @@ catch(error){
 
 
 //IA enviar porcentaje
-export const receivediagnostic =
-    (
-        async (req, res) => {
-            try {
 
-                const di = await dibujosservices.iasmt()
-            }
-            catch (err) { console.log(err) }
-        });
 
 //mandar porcentaje al front
-export const senddiagnostic = (
-    async (req, res) => { }
-);
+
 const controller = {
-    senddiagnostic, receivediagnostic, savedrawing, associateuser
+     savedrawing
 };
 export default controller;
