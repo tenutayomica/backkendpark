@@ -16,7 +16,7 @@ const { Client } = pg
         res.status(500).json({error: 'error'});
     }
 }*/
-const saveusernom = async (nombre)=> {
+/*const saveusernom = async (nombre)=> {
     const cliente= new Client(client);
     await cliente.connect();
     try{
@@ -27,19 +27,20 @@ const saveusernom = async (nombre)=> {
         console.error(error, 'error');
         res.status(500).json({error: 'error'});
     }
-};
+
+};*/
 
 const url= async (imageUrl,nombre)=>{
     const cliente= new Client(client);
     await cliente.connect();
     try{
-    const{rows} = await cliente.query ('INSERT INTO dibujos ("ruta","username") VALUES ($1,$2)',  [imageUrl, nombre]);
+    const{rows} = await cliente.query ('INSERT INTO dibujos ("rutacloud","username") VALUES ($1,$2)',  [imageUrl, nombre]);
      await cliente.end();
      return rows;
 }
 catch(error){
-    console.error(error, 'error');
-    res.status(500).json({error: 'error'});
+    await cliente.end();
+        throw error;
 }
 };
 const iasmt= async ()=>{
@@ -48,5 +49,5 @@ await cliente.connect();
 const{rows}= await cliente.query('INSERT INTO dibujos ("sano") VALUES = $1 WHERE username = $2 ', [req.body.sano, req.params.nombre]);
 };
 export default{
-    saveusernom, url, iasmt
+     url, iasmt
 };

@@ -24,7 +24,11 @@ const savedrawing = ( async (req,res)=>{
 });
 
 const imageUrl = result.secure_url;
+console.log(imageUrl);
 const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
+console.log('sep');
+res.status(200).json({message: 'img uploaded to database'});
+console.log('after');
 }
 catch(error){
     console.error(error, 'eror');
