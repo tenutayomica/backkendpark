@@ -44,7 +44,7 @@ import  verifyToken from "../usuario/usuariomidware.js";
 
 //routes.post('/getuser', verifyToken, controller.associateuser);
 routes.post('/upload', verifyToken,  upload.single('file'), controller.savedrawing);
-routes.post('/sano', verifyToken, controller.aiyapyap);
+routes.post('/sano', verifyToken, controller.postData);
 //routes.get('/upload/:id_usuario', verifyToken, controller.senddiagnostic);
 
 export default routes;

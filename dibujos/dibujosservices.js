@@ -30,7 +30,7 @@ const { Client } = pg
 
 };*/
 
-const url= async (imageUrl,nombre)=>{
+const url= async (imageUrl,nombre,result)=>{
     const cliente= new Client(client);
     await cliente.connect();
     try{
@@ -43,11 +43,23 @@ catch(error){
         throw error;
 }
 };
-const iasmt= async ()=>{
+/*const sanpark= async (result, nombre)=>{
     const cliente= new Client(client);
-await cliente.connect();
-const{rows}= await cliente.query('INSERT INTO dibujos ("sano") VALUES = $1 WHERE username = $2 ', [req.body.sano, req.params.nombre]);
+    await cliente.connect();
+    const{rows}= await cliente.query('INSERT INTO dibujos ("sano") VALUES = ($1) WHERE username = ($2) ', [result, nombre]);
 };
+const grabUrl= async (nombre)=>{
+    const cliente = new Client(client);
+    await cliente.connect();
+    try{
+    const{rows}= await cliente.query('SELECT ("rutacloud") FROM dibujos WHERE "username"= $1', [nombre]);
+    await cliente.end();
+    return rows;
+}
+catch(error){
+    await cliente.end();
+    throw error;
+}};*/
 export default{
-     url, iasmt
+     url
 };
