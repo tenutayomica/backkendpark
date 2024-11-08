@@ -34,7 +34,7 @@ const url= async (imageUrl,nombre,result)=>{
     const cliente= new Client(client);
     await cliente.connect();
     try{
-    const{rows} = await cliente.query ('INSERT INTO dibujos ("rutacloud","username") VALUES ($1,$2)',  [imageUrl, nombre]);
+    const{rows} = await cliente.query ('INSERT INTO dibujos ("rutacloud","username","sano") VALUES ($1,$2,$3)',  [imageUrl, nombre, result]);
      await cliente.end();
      return rows;
 }

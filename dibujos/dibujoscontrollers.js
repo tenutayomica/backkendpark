@@ -25,8 +25,25 @@ const savedrawing = (async (req, res) => {
 
         const imageUrl = result.secure_url;
         console.log(imageUrl);
-       
-            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
+        
+          
+            const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(imageUrl),
+                });
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Success:', result);
+                res.status(200).json(result);
+            }
+            else {
+                console.error('Error:', response.status, response.statusText);
+            };
+            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre, result);
             res.status(201).json({ message: 'img uploaded to database' });
       
         
@@ -42,7 +59,12 @@ const savedrawing = (async (req, res) => {
 const postData = (async (req, res) => {
     try {
        const {imageUrl} = req.body;
-        const response = await fetch('https://conexi-n-ia-front-back.onrender.com', imageUrl,
+       console.log('entra');
+       if (typeof imageUrl !== 'string') {
+        imageUrl = imageUrl.toString();
+      }
+      console.log('entrados');
+        const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
             {
                 method: 'POST',
                 headers: {
@@ -50,11 +72,12 @@ const postData = (async (req, res) => {
                 },
                 body: JSON.stringify(imageUrl),
             });
+            console.log('entratres');
         if (response.ok) {
+            console.log('entracuatro');
             const result = await response.json();
             console.log('Success:', result);
-            const savediagnostic = await dibujosservices.sanpark(result, req.nombre);
-            res.status(200).json({message: 'diagnostic uploaded', savediagnostic});
+            res.status(200).json(result);
         }
         else {
             console.error('Error:', response.status, response.statusText);
