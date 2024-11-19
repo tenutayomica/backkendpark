@@ -27,7 +27,7 @@ const savedrawing = (async (req, res) => {
         console.log(imageUrl);
         
           
-            const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
+            /*const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
                 {
                     method: 'POST',
                     headers: {
@@ -42,8 +42,8 @@ const savedrawing = (async (req, res) => {
             }
             else {
                 console.error('Error:', response.status, response.statusText);
-            };
-            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre, result);
+            };*/
+            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
             res.status(201).json({ message: 'img uploaded to database' });
       
         

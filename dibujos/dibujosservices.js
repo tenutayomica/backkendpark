@@ -30,11 +30,11 @@ const { Client } = pg
 
 };*/
 
-const url= async (imageUrl,nombre,result)=>{
+const url= async (imageUrl,nombre)=>{
     const cliente= new Client(client);
     await cliente.connect();
     try{
-    const{rows} = await cliente.query ('INSERT INTO dibujos ("rutacloud","username","sano") VALUES ($1,$2,$3)',  [imageUrl, nombre, result]);
+    const{rows} = await cliente.query ('INSERT INTO dibujos ("rutacloud","username") VALUES ($1,$2)',  [imageUrl, nombre]);
      await cliente.end();
      return rows;
 }
