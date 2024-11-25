@@ -2,7 +2,7 @@ import express from 'express';
 import router from './usuario/usuariorouter.js';
 import routes from './dibujos/dibujosrouter.js';
 import cors from 'cors'
-app.use(cors());
+
 
 const app = express();
 
@@ -10,7 +10,7 @@ app.use(express.json());
 //indicar para usuario
 app.use("/user", router);
 
-
+app.use(cors());
 //indicar para dibujos
 app.use("/drawing", routes);
 

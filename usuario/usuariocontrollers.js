@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import UsuarioService from './usuarioservices.js';
 import bcryptjs from 'bcryptjs';
+import nodemailer from 'nodemailer';
+import usuarioservices from './usuarioservices.js';
 
 //registro de usuario
 const newuser = async (req, res) => {
@@ -72,24 +74,73 @@ const login =
 
 
 
+const transporter = nodemailer.createTransport({
+  port: 587,
+  host: process.env.EMAIL_HOST,
+  user: process.env.EMAIL_USER,
+  password: process.env.EMAIL_PASSWORD
+});
 
+function randomNumGenerator(min, max) {
+  const randomNums = [];
 
+  for (let i = 0; i < 4; i++) {
+    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    randomNums.push(randomNum);
+  }
+};
 
 //cambiar contraseña o nombre
-/*const cambiacon = async (req, res) => {
-  try {
-    const { nombre } = req.params.nombre;
-    const upd = await UsuarioService.UpdateSer(nombre);
-    res.status(200).json({ message: 'success' });
+const mandaEmail = async (req,res)=>{
+  const {email} = req.body;
+  console.log(email);
+  if (!email){
+    res.status(400).json({message: 'email required'});
   }
-  catch (error) {
+  try{
+    const buscaUsu = await usuarioservices.FindUserByEmail(email);
+    if(!buscaUsu){
+      res.status(403).json({message:'invalid email'});
+    }
+    else{
+      const numChain = randomNumGenerator(1,4);
+      console.log(numChain);
+      transporter.sendMail({
+        from:'micatenu@gmail.com',
+        to: email,
+        subject:'cambio de contraseña',
+        text: 'ingresa estos números en nuestra página para cambiar tu contraseña ' + numChain
+      })
+      res.status(200).json({message:'mail enviado'});
+    }
+  }
+  catch(error){
+  console.error(error, 'error');
+    res.status(500).json({ error: 'error' });
+  }
+};
+const verifyCode= async (req,res)=>{
+  try {
+    const {code}= req.body;
+    if(code == numChain){
+      res.status(200).json({message: 'code verified successfully'});
+    }
+    else{
+      res.status(400).json({message: 'invalid code'});
+    }
+
+  }
+  catch(error){
     console.error(error, 'error');
     res.status(500).json({ error: 'error' });
   }
 };
+const cambiacon= async (req,res)=> {
+  const {nuevaContraseña, email}= req.body;
+  const changepassword= await usuarioservices.changepassword(nuevaContraseña,email);
+}
 
-
-//borrar usuario
+/*borrar usuario
 const deleteuser = async (req, res) => {
   const { nombre } = req.params.nombre;
   const ban = await UsuarioService.BanishSer(nombre);
@@ -97,7 +148,7 @@ const deleteuser = async (req, res) => {
 };*/
 
 const controller = {
- login, newuser
+ login, newuser, cambiacon, mandaEmail, verifyCode
 };
 
 export default controller;

@@ -35,6 +35,22 @@ catch(error){
     throw error;
 }
 }
+const FindUserByEmail = async (email)=>{
+    const cliente = new Client(client)
+    await cliente.connect();
+    try{
+        const {rows} = await cliente.query('SELECT * FROM usuario WHERE ("email")=$1', [email])
+        if (rows.length < 1) return null;
+        await cliente.end();
+     
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+
+    }
+}
 const GetId= async (nombre)=>{
     const cliente = new Client(client)
     await cliente.connect();
@@ -52,30 +68,22 @@ const GetId= async (nombre)=>{
     }
 }
 
-
-//update contraseña
-/* const UpdateSer = async (req,res)=>{
-    await client.connect();
-    try{  
-        const{rows} = await client.query ("UPDATE usuario SET (contraseña) = '?' WHERE nombre = '?' AND contraseña = '?'", [req.body.contrseña, req.params.nombre, req.params.contraseña]);
-        return rows;
-     
+const changepassword = async (nuevaContraseña, email)=>{
+    const cliente = new Client(client);
+    await cliente.connect();
+    try{
+        const {rows}= await cliente.query('UPDATE usuario SET "contraseña" = $1 WHERE "email"= $2 ', [nuevaContraseña, email]);
+        await cliente.end();
+        return rows[0];
     }
     catch(error){
-        await client.end();
+        await cliente.end();
         throw error;
     }
-}*/
+};
 
-//delete user
- /*const BanishSer= async (req,res) =>{
-    try{
-        const{rows}= await client.query ('DELETE * FROM usuario WHERE', [req.params.nombre, req.params.contrseña])
-      }
-      catch(error){
-        throw error
-      }
-}*/
+
+
 export default {
-    Finduser, GetId, RegistSer
+    Finduser, GetId, RegistSer, FindUserByEmail, changepassword
 };

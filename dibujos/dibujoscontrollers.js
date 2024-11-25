@@ -1,6 +1,7 @@
 //dibujos
 import dibujosservices from './dibujosservices.js';
 import cloudinaryconfig from '../cloudinaryconfig.js';
+import fs from 'fs';
 // buscar que usuario la subió y agarrar el id, guardar id_usuario
 /*const associateuser =
     (async (req, res) => {
@@ -22,7 +23,7 @@ const savedrawing = (async (req, res) => {
         const result = await cloudinaryconfig.uploader.upload(imageFile, {
             folder: 'uploaded',
         });
-
+  
         const imageUrl = result.secure_url;
         console.log(imageUrl);
         
@@ -44,7 +45,9 @@ const savedrawing = (async (req, res) => {
                 console.error('Error:', response.status, response.statusText);
             };*/
             const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
+            fs.unlinkSync(imageFile);
             res.status(201).json({ message: 'img uploaded to database' });
+
       
         
     
@@ -88,6 +91,34 @@ const postData = (async (req, res) => {
         res.status(500).json({ error: 'failed' });
     }
 });
+
+/*const postResultToFront =(async (req, res)=> {
+    try{
+        const response = await fetch('fronturl', 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify("tiene parkingson"),
+            });
+            console.log('entratres');
+        if (response.ok) {
+            console.log('entracuatro');
+            const result = await response.json();
+            console.log('Success:', result);
+            res.status(200).json(result);
+        }
+        else {
+            console.error('Error:', response.status, response.statusText);
+        };
+    }
+    catch (error) {
+        console.error(error, 'error');
+        res.status(500).json({ error: 'failed' });
+    }
+    }
+);*/
 
 const controller = {
     savedrawing, postData
