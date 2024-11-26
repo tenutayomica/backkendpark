@@ -68,11 +68,11 @@ const GetId= async (nombre)=>{
     }
 }
 
-const changepassword = async (nuevaContraseña, email)=>{
+const changepassword = async (con, email)=>{
     const cliente = new Client(client);
     await cliente.connect();
     try{
-        const {rows}= await cliente.query('UPDATE usuario SET "contraseña" = $1 WHERE "email"= $2 ', [nuevaContraseña, email]);
+        const {rows}= await cliente.query('UPDATE usuario SET "contraseña" = $1 WHERE "email"= $2 ', [con, email]);
         await cliente.end();
         return rows[0];
     }

@@ -103,16 +103,9 @@ const mandaEmail = async (req,res)=>{
       res.status(403).json({message:'invalid email'});
     }
     else{
-      //const numChain = randomNumGenerator(1,4);
-      //console.log(numChain);
-      //const token = jwt.sign({email: email, truecode: numChain}, 'Secret123', {expiresIn: '1h'});
-      transporter.sendMail({
-        from:'micatenu@gmail.com',
-        to: email,
-        subject:'cambio de contraseña',
-        text: 'ingresa estos números en nuestra página para cambiar tu contraseña 4583' 
-      })
-      res.status(200).json({message:'mail enviado'});
+      const token = jwt.sign({truecode: 4583, email: email}, 'Secret123', {expiresIn: '1h'});
+      res.status(200).json({token: token});
+      
     }
   }
   catch(error){
@@ -137,8 +130,12 @@ const verifyCode= async (req,res)=>{
   }
 };
 const cambiacon= async (req,res)=> {
-  const {nuevaContraseña, email}= req.body;
-  const changepassword= await usuarioservices.changepassword(nuevaContraseña,email);
+  const {nuevaContraseña}= req.body;
+  console.log(nuevaContraseña);
+  const con = await bcryptjs.hash(nuevaContraseña, 10);
+ console.log(con);
+  const changepassword= await usuarioservices.changepassword(con,req.email);
+  res.status(200).json({message: 'new password uploaded' });
 }
 
 /*borrar usuario
