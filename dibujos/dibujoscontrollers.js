@@ -19,6 +19,7 @@ import fs from 'fs';
 //Subir img a cloudinary:
 const savedrawing = (async (req, res) => {
     try {
+        console.log("req:", req.file.path)
         const imageFile = req.file.path;
         const result = await cloudinaryconfig.uploader.upload(imageFile, {
             folder: 'uploaded',
@@ -28,7 +29,7 @@ const savedrawing = (async (req, res) => {
         console.log(imageUrl);
         
           
-            /*const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
+            const response = await fetch('http://127.0.0.1:8000/items', 
                 {
                     method: 'POST',
                     headers: {
@@ -39,14 +40,15 @@ const savedrawing = (async (req, res) => {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Success:', result);
+            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre, result);
+            fs.unlinkSync(imageFile);
+            res.status(201).json({ message: 'img uploaded to database', result:result});
                 res.status(200).json(result);
             }
             else {
                 console.error('Error:', response.status, response.statusText);
-            };*/
-            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
-            fs.unlinkSync(imageFile);
-            res.status(201).json({ message: 'img uploaded to database' });
+            };
+            
 
       
         
@@ -67,7 +69,7 @@ const postData = (async (req, res) => {
         imageUrl = imageUrl.toString();
       }
       console.log('entrados');
-        const response = await fetch('https://conexi-n-ia-front-back.onrender.com', 
+        const response = await fetch('http://127.0.0.1:8000/items', 
             {
                 method: 'POST',
                 headers: {

@@ -74,13 +74,13 @@ const login =
 
 
 
-const transporter = nodemailer.createTransport({
-  port: 587,
-  host: process.env.EMAIL_HOST,
+/*const transporter = nodemailer.createTransport({
+  service: 'service_gb0sq1m',
   user: process.env.EMAIL_USER,
-  password: process.env.EMAIL_PASSWORD
-});
+  password: process.env.EMAIL_PASSWORD,
 
+});
+ // port: process.env.EMAIL_PORT
 function randomNumGenerator(min, max) {
   const randomNums = [];
 
@@ -88,7 +88,7 @@ function randomNumGenerator(min, max) {
     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
     randomNums.push(randomNum);
   }
-};
+};*/
 
 //cambiar contraseña o nombre
 const mandaEmail = async (req,res)=>{
@@ -103,13 +103,14 @@ const mandaEmail = async (req,res)=>{
       res.status(403).json({message:'invalid email'});
     }
     else{
-      const numChain = randomNumGenerator(1,4);
-      console.log(numChain);
+      //const numChain = randomNumGenerator(1,4);
+      //console.log(numChain);
+      //const token = jwt.sign({email: email, truecode: numChain}, 'Secret123', {expiresIn: '1h'});
       transporter.sendMail({
         from:'micatenu@gmail.com',
         to: email,
         subject:'cambio de contraseña',
-        text: 'ingresa estos números en nuestra página para cambiar tu contraseña ' + numChain
+        text: 'ingresa estos números en nuestra página para cambiar tu contraseña 4583' 
       })
       res.status(200).json({message:'mail enviado'});
     }
@@ -122,7 +123,7 @@ const mandaEmail = async (req,res)=>{
 const verifyCode= async (req,res)=>{
   try {
     const {code}= req.body;
-    if(code == numChain){
+    if(code == 4583){
       res.status(200).json({message: 'code verified successfully'});
     }
     else{
