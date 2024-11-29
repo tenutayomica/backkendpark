@@ -5,12 +5,12 @@ import cors from 'cors'
 
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 //indicar para usuario
 app.use("/user", router);
 
-app.use(cors());
 //indicar para dibujos
 app.use("/drawing", routes);
 

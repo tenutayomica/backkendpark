@@ -43,7 +43,7 @@ import controller from './dibujoscontrollers.js'
 import  verifyToken from "../usuario/usuariomidware.js";
 
 //routes.post('/getuser', verifyToken, controller.associateuser);
-routes.post('/upload', verifyToken,  upload.single('file'), controller.savedrawing);
+routes.post('/upload', verifyToken, upload.single('file'), controller.savedrawing);
 //routes.post('/sano', controller.postData);
 //routes.get('/upload/:id_usuario', verifyToken, controller.senddiagnostic);
 

@@ -103,8 +103,11 @@ const mandaEmail = async (req,res)=>{
       res.status(403).json({message:'invalid email'});
     }
     else{
+      console.log('usuario encontrado');
       const token = jwt.sign({truecode: 4583, email: email}, 'Secret123', {expiresIn: '1h'});
-      res.status(200).json({token: token});
+      console.log(token);
+      res.status(200).json({message: '4583', token: token});
+      console.log('enviado a front');
       
     }
   }
