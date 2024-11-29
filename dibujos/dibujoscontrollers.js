@@ -24,42 +24,34 @@ const savedrawing = (async (req, res) => {
         const result = await cloudinaryconfig.uploader.upload(imageFile, {
             folder: 'uploaded',
         });
-  
+
         const imageUrl = result.secure_url;
         console.log(imageUrl);
-        
-          
-            const response = await fetch('http://127.0.0.1:8000/items', 
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(imageUrl),
-                });
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Success:', result);
-            const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre, result);
-            fs.unlinkSync(imageFile);
-            res.status(201).json({ message: 'img uploaded to database', result:result});
-                res.status(200).json(result);
-            }
-            else {
-                console.error('Error:', response.status, response.statusText);
-            };
-            
 
-      
-        
-    
-        
+
+        const uploadToDatabase = await dibujosservices.url(imageUrl, req.nombre);
+        fs.unlinkSync(imageFile);
+        res.status(201).json({ message: 'img uploaded to database' });
+
     }
+
     catch (error) {
         console.error(error, 'eror');
         res.status(500).json({ error: 'failed' });
     };
 });
+
+/*const response = await fetch('http://127.0.0.1:8000/items', 
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(imageUrl),
+    });
+if (response.ok) {
+    const result = await response.json();
+    console.log('Success:', result);
 
 const postData = (async (req, res) => {
     try {
@@ -94,7 +86,7 @@ const postData = (async (req, res) => {
     }
 });
 
-/*const postResultToFront =(async (req, res)=> {
+const postResultToFront =(async (req, res)=> {
     try{
         const response = await fetch('fronturl', 
             {
@@ -123,6 +115,6 @@ const postData = (async (req, res) => {
 );*/
 
 const controller = {
-    savedrawing, postData
+    savedrawing
 };
 export default controller;

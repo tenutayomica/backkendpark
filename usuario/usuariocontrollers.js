@@ -1,13 +1,14 @@
 import jwt from 'jsonwebtoken';
 import UsuarioService from './usuarioservices.js';
 import bcryptjs from 'bcryptjs';
-import nodemailer from 'nodemailer';
 import usuarioservices from './usuarioservices.js';
+import cloudinaryconfig from '../cloudinaryconfig.js';
+import fs from 'fs';
 
 //registro de usuario
 const newuser = async (req, res) => {
   console.log("new user", req.body)
-  const {nombre, email, contraseña} = req.body;
+  const { nombre, email, contraseña } = req.body;
   if (!nombre || !email || !contraseña) {
     return res.status(400).json({ error: 'Datos de usuario incompletos' });
   }
@@ -27,15 +28,15 @@ const newuser = async (req, res) => {
         const savedUser = await UsuarioService.RegistSer(newUser);
 
         res.status(201).json({ message: 'Usuario creado exitosamente', user: savedUser });
-        
+
       }
       else {
-        return res.status(409).json({ error: 'El usuario ya existe'});
+        return res.status(409).json({ error: 'El usuario ya existe' });
       }
     }
     catch (error) {
       console.error('error', error);
-      res.status(500).json({ error: 'failed to create user'});
+      res.status(500).json({ error: 'failed to create user' });
 
     }
   }
@@ -45,7 +46,7 @@ const newuser = async (req, res) => {
 const login =
   async (req, res) => {
     const { nombre, contraseña } = req.body;
-    console.log(nombre,contraseña);
+    console.log(nombre, contraseña);
     if (!nombre || !contraseña) {
       return res.status(400).json({ error: 'Se requiere nombre y contraseña' });
     }
@@ -54,16 +55,17 @@ const login =
         console.log(nombre);
         const user = await UsuarioService.Finduser(nombre);
         if (!user) { return res.status(400).json({ error: 'invalid user' }) }
-        else{
-        const checkPassword = await bcryptjs.compare(contraseña, user.contraseña);
-        console.log(checkPassword);
-        if (!checkPassword) {
-          return res.status(400).json({ error: 'invalid password' })
-        }
         else {
-          const token = jwt.sign({ usernombre: nombre }, 'Secret123', { expiresIn: '1h' });
-          res.status(200).json({ token:token });
-        }}
+          const checkPassword = await bcryptjs.compare(contraseña, user.contraseña);
+          console.log(checkPassword);
+          if (!checkPassword) {
+            return res.status(400).json({ error: 'invalid password' })
+          }
+          else {
+            const token = jwt.sign({ usernombre: nombre }, 'Secret123', { expiresIn: '1h' });
+            res.status(200).json({ token: token });
+          }
+        }
       }
       catch (error) {
         console.error(error);
@@ -91,51 +93,51 @@ function randomNumGenerator(min, max) {
 };*/
 
 //cambiar contraseña o nombre
-const mandaEmail = async (req,res)=>{
-  const {email} = req.body;
+const mandaEmail = async (req, res) => {
+  const { email } = req.body;
   console.log(email);
-  if (!email){
-    res.status(400).json({message: 'email required'});
+  if (!email) {
+    res.status(400).json({ message: 'email required' });
   }
-  try{
-    const buscaUsu = await usuarioservices.FindUserByEmail(email);
-    if(!buscaUsu){
-      res.status(403).json({message:'invalid email'});
-    }
-    else{
-      const token = jwt.sign({truecode: 4583, email: email}, 'Secret123', {expiresIn: '1h'});
-      res.status(200).json({token: token});
-      
-    }
-  }
-  catch(error){
-  console.error(error, 'error');
-    res.status(500).json({ error: 'error' });
-  }
-};
-const verifyCode= async (req,res)=>{
   try {
-    const {code}= req.body;
-    if(code == 4583){
-      res.status(200).json({message: 'code verified successfully'});
+    const buscaUsu = await usuarioservices.FindUserByEmail(email);
+    if (!buscaUsu) {
+      res.status(403).json({ message: 'invalid email' });
     }
-    else{
-      res.status(400).json({message: 'invalid code'});
-    }
+    else {
+      const token = jwt.sign({ truecode: 4583, email: email }, 'Secret123', { expiresIn: '1h' });
+      res.status(200).json({ token: token });
 
+    }
   }
-  catch(error){
+  catch (error) {
     console.error(error, 'error');
     res.status(500).json({ error: 'error' });
   }
 };
-const cambiacon= async (req,res)=> {
-  const {nuevaContraseña}= req.body;
+const verifyCode = async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (code == 4583) {
+      res.status(200).json({ message: 'code verified successfully' });
+    }
+    else {
+      res.status(400).json({ message: 'invalid code' });
+    }
+
+  }
+  catch (error) {
+    console.error(error, 'error');
+    res.status(500).json({ error: 'error' });
+  }
+};
+const cambiacon = async (req, res) => {
+  const { nuevaContraseña } = req.body;
   console.log(nuevaContraseña);
   const con = await bcryptjs.hash(nuevaContraseña, 10);
- console.log(con);
-  const changepassword= await usuarioservices.changepassword(con,req.email);
-  res.status(200).json({message: 'new password uploaded' });
+  console.log(con);
+  const changepassword = await usuarioservices.changepassword(con, req.email);
+  res.status(200).json({ message: 'new password uploaded' });
 }
 
 /*borrar usuario
@@ -144,9 +146,45 @@ const deleteuser = async (req, res) => {
   const ban = await UsuarioService.BanishSer(nombre);
   return 'borrado';
 };*/
+const profile = async (req, res) => {
+  console.log("AAAAAAAAAAAAAA")
+  try {
+    const imageFile = req.file.path;
+    console.log(imageFile);
+    const result = await cloudinaryconfig.uploader.upload(imageFile, {
+      folder: 'uploaded',
+    });
+
+    const imageUrl = result.secure_url;
+    console.log(imageUrl);
+
+    const { nombreposta, apellido, genero, fechanacimiento } = req.body;
+    console.log(nombreposta, apellido, genero, fechanacimiento);
+    if (!nombreposta || !apellido || !genero || !fechanacimiento) {
+      res.status(400).json({ message: 'datos incompletos' });
+    }
+    const getuser = await usuarioservices.Finduser(req.nombre);
+    if (!getuser) {
+      res.status(404).json({ message: 'user not found' });
+    }
+    else {
+      const savename = await usuarioservices.savenombreposta(nombreposta, req.nombre);
+      const saveape = await usuarioservices.saveapellido(apellido, req.nombre);
+      const savegen = await usuarioservices.savegender(genero, req.nombre);
+      const savebirth = await usuarioservices.savebirthdate(fechanacimiento, req.nombre);
+      const saveimg = await usuarioservices.saveimg(imageUrl, req.nombre);
+      res.status(200).json({ message: 'data uploaded to detabase' });
+    }
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+
+}
 
 const controller = {
- login, newuser, cambiacon, mandaEmail, verifyCode
+  login, newuser, cambiacon, mandaEmail, verifyCode, profile
 };
 
 export default controller;

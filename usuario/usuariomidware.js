@@ -6,6 +6,8 @@ const verifyToken = async (req, res, next) => {
     const jwtoken = req.headers.authorization.slice(7);
     console.log("jwt", jwtoken)
     if(!jwtoken){
+
+      console.log('entra');
         return res.status(401).json({error: "No token"});
         
     }
@@ -15,6 +17,7 @@ const verifyToken = async (req, res, next) => {
       const payload = await jwt.verify(jwtoken, 'Secret123')
       console.log("Desencriptado:", payload)
       req.nombre = payload.usernombre;
+      console.log('gogogo');
       next();
     }
     catch(error) {
