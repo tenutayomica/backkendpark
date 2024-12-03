@@ -56,7 +56,7 @@ const GetId= async (nombre)=>{
     await cliente.connect();
     try
     {
-     const {rows}= await cliente.query('SELECT "id" FROM usuario WHERE "nombre"= $1', [nombre])
+     const {rows}= await cliente.query('SELECT "id" FROM usuario WHERE ("nombre") = $1', [nombre])
      if (rows.length < 1) return null;
      await cliente.end();
      
@@ -82,8 +82,87 @@ const changepassword = async (con, email)=>{
     }
 };
 
+const savenombreposta = async (nombreposta, nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('UPDATE usuario SET "truename"= $1 WHERE "nombre" = $2', [nombreposta, nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
+const saveapellido = async (apellido, nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('UPDATE usuario SET "apellido"= $1 WHERE "nombre" = $2', [apellido, nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
+const savegender = async (genero, nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('UPDATE usuario SET "gender"= $1 WHERE "nombre" = $2', [genero, nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
+const savebirthdate = async (fechanacimiento, nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('UPDATE usuario SET "birthdate"= $1 WHERE "nombre" = $2', [fechanacimiento, nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
 
+const saveimg = async (imageUrl, nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('UPDATE usuario SET "profileimg"= $1 WHERE "nombre" = $2', [imageUrl, nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
+
+const getProfile = async (nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('SELECT ( "profileimg","truename", "apellido", "gender", "birthdate") FROM usuario WHERE nombre= $1', [nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
 
 export default {
-    Finduser, GetId, RegistSer, FindUserByEmail, changepassword
+    Finduser, GetId, RegistSer, FindUserByEmail, changepassword, saveapellido, savebirthdate, savegender, saveimg, savenombreposta, getProfile
 };
