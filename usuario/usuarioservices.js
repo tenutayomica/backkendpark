@@ -149,7 +149,20 @@ const saveimg = async (imageUrl, nombre)=>{
     }
 }
 
+const getProfile = async (nombre)=>{
+    const cliente= new Client(client);
+    await cliente.connect();
+    try{
+        const{rows}= await cliente.query('SELECT ( "profileimg","truename", "apellido", "gender", "birthdate") FROM usuario WHERE nombre= $1', [nombre]);
+        await cliente.end();
+        return rows[0];
+    }
+    catch(error){
+        await cliente.end();
+        throw error;
+    }
+}
 
 export default {
-    Finduser, GetId, RegistSer, FindUserByEmail, changepassword, saveapellido, savebirthdate, savegender, saveimg, savenombreposta
+    Finduser, GetId, RegistSer, FindUserByEmail, changepassword, saveapellido, savebirthdate, savegender, saveimg, savenombreposta, getProfile
 };

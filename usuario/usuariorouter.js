@@ -46,5 +46,6 @@ router.post('/mandarMail', usuarioController.mandaEmail)
 router.post('/verifyCode', usuarioController.verifyCode)
 router.post('/resetPassword', usuarioController.cambiacon)
 router.post('/profile', verifyToken, upload.single('file'), usuarioController.profile)
+router.get('/sendprofile', verifyToken, usuarioController.sendprofile)
 //router.delete('/:nombre', verifyToken, usuarioController.deleteuser)
 export default router;

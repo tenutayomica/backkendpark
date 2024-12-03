@@ -183,8 +183,20 @@ const profile = async (req, res) => {
 
 }
 
+const sendprofile= async (req,res)=>{
+  try{
+    const grabdata= await usuarioservices.getProfile(req.nombre);
+    res.status(200).json(grabdata);
+  }
+    catch(error){
+      console.error(error);
+      res.status(500).json({message: 'error'});
+
+    }
+}
+
 const controller = {
-  login, newuser, cambiacon, mandaEmail, verifyCode, profile
+  login, newuser, cambiacon, mandaEmail, verifyCode, profile, sendprofile
 };
 
 export default controller;
